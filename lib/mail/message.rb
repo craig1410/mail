@@ -2022,7 +2022,7 @@ module Mail
       raw_string = raw_source.to_s
       if match_data = raw_source.to_s.match(/\AFrom\s(#{TEXT}+)#{CRLF}/m)
         set_envelope(match_data[1])
-        self.raw_source = raw_string.sub(match_data[0], "") 
+        self.raw_source = raw_string.sub(match_data[0], "")
       end
     end
 
@@ -2122,6 +2122,7 @@ module Mail
     def find_attachment
       content_type_name = header[:content_type].filename rescue nil
       content_disp_name = header[:content_disposition].filename rescue nil
+      content_disp_type = header[:content_disposition].disposition_type rescue nil
       content_loc_name  = header[:content_location].location rescue nil
       case
       when content_type && content_type_name
@@ -2130,7 +2131,7 @@ module Mail
         filename = content_disp_name
       when content_location && content_loc_name
         filename = content_loc_name
-      when content_disposition == 'attachment'
+      when content_disposition && content_disp_type == 'attachment'
         filename = generate_filename(content_type)
       else
         filename = nil
